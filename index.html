@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nắng Mưa Nào Việc Của Trời</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home,music_note,videocam&display=block" />
+    <link href="assets/Lexend-VariableFont_wght.ttf" rel="stylesheet">
+    <link href="assets/Phudu-VariableFont_wght.ttf" rel="stylesheet">
+
+    <script src="https://unpkg.com/tone"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+    <script src="libraries/p5.min.js"></script>
+</head>
+
+<body>
+    <div id="crt"></div>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-status">Đang khởi tạo...</div>
+            <div class="loading-progress">Initializing camera and detection model</div>
+        </div>
+    </div>
+
+    <div id="home-page" class="module-container">
+        <video class="home-bg" src="assets/home_bg.mp4" poster="assets/home_bg.png" oncontextmenu="return false;"
+            draggable="false" playsinline autoplay muted loop></video>
+        <div class="home-module">
+            <div class="welcome-section">
+                <h1 class="main-title">
+                    <img src="assets/logo.svg">
+                </h1>
+                <div class="intro-text">
+                    <p>In 2049 Ho Chi Minh City, weather is no longer just up to the sky. With half of District 7
+                        underwater and dangerous UV levels, survival requires new skills. This system transforms
+                        traditional Vietnamese weather wisdom into practical knowledge for our climate-changed world.
+                    </p>
+                </div>
+                <button id="start-button" class="start-btn">Start Experience</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="module-select" class="module-container">
+        <video class="home-bg" src="assets/home_bg.mp4" poster="assets/home_bg.png" oncontextmenu="return false;"
+            draggable="false" playsinline autoplay muted loop></video>
+        <div class="home-module">
+            <div class="welcome-section">
+                <div class="intro-text">
+                    <p>Use your head movements to navigate through the modules - tilt left/right (while holding SHIFT)
+                        to switch between topics, and hold your gaze (release SHIFT) to select. Content will adapt to
+                        your focus, just like a real 2049 neural interface.</p>
+                </div>
+                <h3>Choose your module to begin</h3>
+                <div class="module-buttons">
+                    <button class="module-btn" data-module="1">
+                        <div class="module-number">MODULE<span>(01)</span></div>
+                        <div class="vietnamese-title">TRÁNH VOI<br>CHẲNG XẤU MẶT NÀO</div>
+                        <div class="english-title">BEING SMART<br>ABOUT SUN</div>
+                    </button>
+
+                    <button class="module-btn" data-module="2">
+                        <div class="module-number">MODULE<span>(02)</span></div>
+                        <div class="vietnamese-title">NƯỚC NỔI THUYỀN LÊN</div>
+                        <div class="english-title">RISING WITH<br>THE WATERS</div>
+                    </button>
+
+                    <button class="module-btn" data-module="3">
+                        <div class="module-number">MODULE<span>(03)</span></div>
+                        <div class="vietnamese-title">TRONG ẤM NGOÀI ÊM</div>
+                        <div class="english-title">BALANCING INDOOR<br>& OUTDOOR LIFE</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Debug camera view -->
+        <div id="canvas-container"></div>
+
+        <!-- Navigation display -->
+        <div id="navigation-overlay">
+            <button class="home-btn" onclick="returnToHome()"><span class="material-symbols-rounded">
+                    home
+                </span></button>
+            <button class="debug-btn" onclick="toggleDebug()"><span class="material-symbols-rounded">
+                    videocam
+                </span>
+            </button>
+        </div>
+
+        <!-- Debug controls -->
+        <div id="controls">
+
+        </div>
+
+        <!-- Instructions -->
+        <div id="instructions">
+            <div class="instructions-english">
+                Hold SHIFT + Tilt head left/right to change lessons<br>
+                Hold SHIFT + Tilt head up/down to change modules
+            </div>
+        </div>
+
+        <!-- Module 1: Being Smart About Sun -->
+        <div id="module1A" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">The early bird gets more than just the worm - it gets the safest time
+                            of day!<br>During these golden hours, our city is at its coolest. This is when you can:</p>
+                        <ul class="activity-list">
+                            <li>Take your hover-bike to school</li>
+                            <li>Do your morning exercises in the community cooling zones</li>
+                            <li>Help your family collect fresh water from the community purifiers</li>
+                        </ul>
+                        <p class="content-note">But remember: even early morning sun needs respect!
+                            <br>Your personal shield should always be charged and ready.
+                        </p>
+                    </div>
+                    <div id="timezone-clock" class="clock-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module1B" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">During these hours, the sun is like a dragon breathing fire! But don't
+                            worry - we've got the tricks to stay cool and safe:</p>
+                        <ul class="activity-list">
+                            <li>Follow the blue light paths in your school's corridors</li>
+                            <li>Use your personal cooling companion during outdoor transitions</li>
+                        </ul>
+                        <div id="warning-display" class="warning-display"></div>
+                    </div>
+                    <div id="timezone-clock-b" class="clock-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module1C" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">As the dragon rests, we can come out to play! But remember:</p>
+                        <ul class="activity-list">
+                            <li>Check your community app for safe zones</li>
+                            <li>Keep your water levels topped up</li>
+                            <li>Join your friends in the protected community spaces</li>
+                            <li>Practice your heat emergency drills (they're actually fun now!)</li>
+                        </ul>
+                    </div>
+                    <div id="timezone-clock-c" class="clock-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 1D: Smart Protection Game -->
+        <div id="module1D" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">Test your sun-smart skills! Navigate your character through a day in
+                            our sunny city.</p>
+                        <ul class="activity-list">
+                            <li>Collect cooling points</li>
+                            <li>Dodge heat waves</li>
+                            <li>Help others stay safe</li>
+                            <li>Make it through a whole day with a perfect protection score</li>
+                        </ul>
+                        <button id="startGameBtn" class="start-btn">Start Game</button>
+                    </div>
+                    <div id="game-container" class="game-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2: Rising With The Waters -->
+        <div id="module2A" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">The rains have transformed our neighborhood! Your personal device now
+                            shows our streets as flowing rivers, but don't worry - we've got cool ways to get around:
+                        </p>
+                        <ul class="activity-list route">
+                            <li><div class="color-box blue-route"></div><strong>Blue Routes:</strong> Our safest paths, protected by community barriers</li>
+                            <li><div class="color-box green-route"></div><strong>Green Routes:</strong> Regular water transport lanes, watch for traffic!</li>
+                            <li><div class="color-box purple-route"></div><strong>Purple Routes:</strong> Emergency-only paths, memorize these for safety</li>
+                            <li><div class="color-box golden-route"></div><strong>Golden Routes:</strong> Special paths to school and community centers</li>
+                        </ul>
+                        <p class="content-note">Remember: When your device flashes the rainbow warning, that means a big
+                            rain is coming. Time to switch to water transport mode!</p>
+                    </div>
+                    <div class="map-container">
+                        <div class="map-image">
+                            <!-- Map 1: Water Routes -->
+                            <img src="assets/water-routes-map.png" alt="Water routes navigation map"
+                                class="navigation-map">
+                        </div>
+                        <div class="map-legend">
+                            <h3>Route Types</h3>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <span class="color-box blue-route"></span>
+                                    <span>Protected community paths</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box green-route"></span>
+                                    <span>Regular water transport</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box purple-route"></span>
+                                    <span>Emergency paths</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box golden-route"></span>
+                                    <span>School & community paths</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module2B" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">Your smart rain gear isn't just for staying dry - it's your personal
+                            safety system:</p>
+                        <ol class="activity-list gear">
+                            <li>Helmet display shows water depth and quality</li>
+                            <li>Boots change color in unsafe water</li>
+                            <li>Jacket lights up to signal your presence</li>
+                            <li>Backpack transforms into emergency float</li>
+                        </ol>
+                        <div class="safety-signals">
+                            <h3>When your safety system chirps like a bird, that's your signal to check your
+                                surroundings:</h3>
+                            <ul class="activity-list audio">
+                                <li>
+                                    <button class="chirp-btn" data-pattern="single"
+                                        style="background-color: var(--blue)">
+                                        <span class="material-symbols-rounded">
+                                            music_note
+                                        </span>
+                                    </button>
+                                    One chirp: Regular safety check
+                                </li>
+                                <li>
+                                    <button class="chirp-btn" data-pattern="double"
+                                        style="background-color: var(--orange)">
+                                        <span class="material-symbols-rounded">
+                                            music_note
+                                        </span>
+                                    </button>
+                                    Two chirps: Water level rising
+                                </li>
+                                <li>
+                                    <button class="chirp-btn" data-pattern="triple"
+                                        style="background-color: var(--purple)">
+                                        <span class="material-symbols-rounded">
+                                            music_note
+                                        </span>
+                                    </button>
+                                    Three chirps: Find high ground
+                                </li>
+                                <li>
+                                    <button class="chirp-btn" data-pattern="continuous"
+                                        style="background-color: var(--magenta)">
+                                        <span class="material-symbols-rounded">
+                                            music_note
+                                        </span>
+                                    </button>
+                                    Continuous song: Emergency help needed
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <img src="assets/2B-GIF.gif" class="navigation-map">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3: Balancing Indoor and Outdoor Life -->
+        <div id="module3A" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">Your body is like a delicate instrument that needs careful tuning when
+                            moving between spaces. <br>Here's how to master the art of transition:</p>
+                        <div class="level-container">
+                            <div class="level-section">
+                                <h3>Level 1: The Basics</h3>
+                                <ul class="activity-list">
+                                    <li>Start in the blue zone (indoor, controlled climate)</li>
+                                    <li>Watch your body temperature gauge</li>
+                                    <li>Move through the gradient corridor</li>
+                                    <li>Reach the red zone (outdoor) safely</li>
+                                </ul>
+                            </div>
+
+                            <div class="level-section">
+                                <h3>Level 2: Advanced Movement</h3>
+                                <ul class="activity-list">
+                                    <li>Navigate multiple temperature zones</li>
+                                    <li>Help friends adjust their settings</li>
+                                    <li>Manage your energy levels</li>
+                                    <li>Find the quickest safe routes</li>
+                                </ul>
+                            </div>
+
+                            <div class="level-section">
+                                <h3>Level 3: Emergency Master</h3>
+                                <ul class="activity-list">
+                                    <li>Handle sudden temperature changes</li>
+                                    <li>Lead group transitions</li>
+                                    <li>Operate emergency cooling stations</li>
+                                    <li>Create safe paths for others</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module3B" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <p class="content-intro">Your personal device shows you the safest ways to move through our
+                            temperature-controlled world:</p>
+                        <ul class="activity-list zone">
+                            <li><div class="color-box cool-zone"></div><strong>Cool Zones:</strong> Perfect for studying and playing</li>
+                            <li><div class="color-box buffer-zone"></div><strong>Warm Zones:</strong> Good for exercise and movement</li>
+                            <li><div class="color-box warm-zone"></div><strong>Buffer Zones:</strong> Where you adjust between temperatures</li>
+                            <li><div class="color-box cooling-station"></div><strong>Emergency Zones:</strong> Always know where these are!</li>
+                        </ul>
+                        <p class="content-note">Remember our modern saying: 'Phòng bệnh hơn chữa bệnh'</p>
+                    </div>
+                    <div class="map-container">
+                        <div class="map-image">
+                            <!-- Map 2: Temperature Zones -->
+                            <img src="assets/temperature-zones-map.png" alt="Temperature zones map"
+                                class="navigation-map">
+                        </div>
+                        <div class="map-legend">
+                            <h3>Zone Types</h3>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <span class="color-box cool-zone"></span>
+                                    <span>Cool Zones: Study and relaxation areas</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box buffer-zone"></span>
+                                    <span>Buffer Zones: Temperature transition areas</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box warm-zone"></span>
+                                    <span>Warm Zones: Exercise and activity areas</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box cooling-station"></span>
+                                    <span>Cooling Stations: Emergency temperature control</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="module3C" class="module-container">
+            <div class="module-content">
+                <div class="module-title"></div>
+                <div class="content-wrapper">
+                    <div class="content-text">
+                        <div class="activity-section">
+                            <h3>The Temperature Trail</h3>
+                            <ul class="activity-list">
+                                <li>Navigate from your home to school</li>
+                                <li>Find all the cooling stations</li>
+                                <li>Mark safe rest spots</li>
+                                <li>Help new friends learn the paths</li>
+                            </ul>
+                        </div>
+
+                        <div class="activity-section">
+                            <h3>Community Helper Challenge</h3>
+                            <p class="content-intro">Create the perfect temperature route for:</p>
+                            <ul class="activity-list">
+                                <li>Younger siblings going to school</li>
+                                <li>Elderly neighbors getting groceries</li>
+                                <li>Friends meeting for study groups</li>
+                                <li>Community gatherings</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/components/clock.js"></script>
+        <script src="assets/components/sun-protection-game.js"></script>
+        <script src="assets/components/warning-display.js"></script>
+        <script src="assets/components/chirp-system.js"></script>
+
+        <!-- Initialize Components -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                createTimeZoneClock('timezone-clock');
+                createTimeZoneClock('timezone-clock-b');
+                createTimeZoneClock('timezone-clock-c');
+                createWarningDisplay('warning-display');
+            });
+        </script>
+
+        <!-- Main script -->
+        <script src="index.js"></script>
+</body>
+
+</html>
