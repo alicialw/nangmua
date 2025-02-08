@@ -10,8 +10,9 @@
 
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home,music_note,videocam&display=block" />
-    <link href="assets/Lexend-VariableFont_wght.ttf" rel="stylesheet">
-    <link href="assets/Phudu-VariableFont_wght.ttf" rel="stylesheet">
+    <link href="assets/fonts/Lexend-VariableFont_wght.ttf" rel="stylesheet">
+    <link href="assets/fonts/Phudu-VariableFont_wght.ttf" rel="stylesheet">
+    <link href="assets/fonts/VT323-Regular.ttf" rel="stylesheet">
 
     <script src="https://unpkg.com/tone"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
@@ -119,10 +120,16 @@
                     <div class="content-text">
                         <p class="content-intro">The early bird gets more than just the worm - it gets the safest time
                             of day!<br>During these golden hours, our city is at its coolest. This is when you can:</p>
-                        <ul class="activity-list">
-                            <li>Take your hover-bike to school</li>
-                            <li>Do your morning exercises in the community cooling zones</li>
-                            <li>Help your family collect fresh water from the community purifiers</li>
+                        <ul class="activity-list morning">
+                            <li><div class="element-img"><img src="assets/hoverbike.png"></div>
+                                Take your hover-bike to school
+                            </li>
+                            <li><div class="element-img"><img src="assets/exercise.png"></div>
+                                Do your morning exercises in the community cooling zones
+                            </li>
+                            <li><div class="element-img"><img src="assets/waterstation.png"></div>
+                                Help your family collect fresh water from the community purifiers
+                            </li>
                         </ul>
                         <p class="content-note">But remember: even early morning sun needs respect!
                             <br>Your personal shield should always be charged and ready.
@@ -138,13 +145,16 @@
                 <div class="module-title"></div>
                 <div class="content-wrapper">
                     <div class="content-text">
-                        <p class="content-intro">During these hours, the sun is like a dragon breathing fire! But don't
-                            worry - we've got the tricks to stay cool and safe:</p>
+                        <p class="content-intro">During these hours, the sun is like a dragon breathing fire!
+                            <br>But don't worry - we've got the tricks to stay cool and safe:</p>
                         <ul class="activity-list">
                             <li>Follow the blue light paths in your school's corridors</li>
                             <li>Use your personal cooling companion during outdoor transitions</li>
+                            <li>Watch for the warning colors on your wrist device</li>
                         </ul>
-                        <div id="warning-display" class="warning-display"></div>
+                        <div class="additional-image">
+                            <img src="assets/watch.gif">
+                        </div>
                     </div>
                     <div id="timezone-clock-b" class="clock-container"></div>
                 </div>
@@ -163,6 +173,9 @@
                             <li>Join your friends in the protected community spaces</li>
                             <li>Practice your heat emergency drills (they're actually fun now!)</li>
                         </ul>
+                        <div class="additional-image">
+                            <img src="assets/companion.gif">
+                        </div>
                     </div>
                     <div id="timezone-clock-c" class="clock-container"></div>
                 </div>
@@ -175,8 +188,7 @@
                 <div class="module-title"></div>
                 <div class="content-wrapper">
                     <div class="content-text">
-                        <p class="content-intro">Test your sun-smart skills! Navigate your character through a day in
-                            our sunny city.</p>
+                        <p class="content-intro">Test your sun-smart skills! Navigate your character through a&nbsp;day&nbsp;in&nbsp;our&nbsp;sunny&nbsp;city.</p>
                         <ul class="activity-list">
                             <li>Collect cooling points</li>
                             <li>Dodge heat waves</li>
@@ -314,6 +326,9 @@
                         <div class="level-container">
                             <div class="level-section">
                                 <h3>Level 1: The Basics</h3>
+                                <div class="level-image">
+                                    <img src="assets/3a1.png">
+                                </div>
                                 <ul class="activity-list">
                                     <li>Start in the blue zone (indoor, controlled climate)</li>
                                     <li>Watch your body temperature gauge</li>
@@ -324,6 +339,9 @@
 
                             <div class="level-section">
                                 <h3>Level 2: Advanced Movement</h3>
+                                <div class="level-image">
+                                    <img src="assets/3a2.png">
+                                </div>
                                 <ul class="activity-list">
                                     <li>Navigate multiple temperature zones</li>
                                     <li>Help friends adjust their settings</li>
@@ -334,6 +352,9 @@
 
                             <div class="level-section">
                                 <h3>Level 3: Emergency Master</h3>
+                                <div class="level-image">
+                                    <img src="assets/3a3.png">
+                                </div>
                                 <ul class="activity-list">
                                     <li>Handle sudden temperature changes</li>
                                     <li>Lead group transitions</li>
@@ -352,8 +373,7 @@
                 <div class="module-title"></div>
                 <div class="content-wrapper">
                     <div class="content-text">
-                        <p class="content-intro">Your personal device shows you the safest ways to move through our
-                            temperature-controlled world:</p>
+                        <p class="content-intro">Your personal device shows you the safest ways to move through our&nbsp;temperature-controlled&nbsp;world:</p>
                         <ul class="activity-list zone">
                             <li><div class="color-box cool-zone"></div><strong>Cool Zones:</strong> Perfect for studying and playing</li>
                             <li><div class="color-box buffer-zone"></div><strong>Warm Zones:</strong> Good for exercise and movement</li>
@@ -420,6 +440,9 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="map-container">
+                        <img src="assets/buffer.png" class="navigation-map">
+                    </div>
                 </div>
             </div>
         </div>
@@ -435,7 +458,6 @@
                 createTimeZoneClock('timezone-clock');
                 createTimeZoneClock('timezone-clock-b');
                 createTimeZoneClock('timezone-clock-c');
-                createWarningDisplay('warning-display');
             });
         </script>
 

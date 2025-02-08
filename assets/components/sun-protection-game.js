@@ -5,6 +5,7 @@ let gameSketch = function(p) {
     let timeOfDay = 0;
     let gameStarted = false;
     let gameOver = false;
+    let retroFont;
     
     const GRID = {
         COLS: 12,
@@ -16,6 +17,10 @@ let gameSketch = function(p) {
         get cellWidth() { return (this.width - 2 * this.MARGIN_X) / this.COLS; },
         get cellHeight() { return (this.height - 2 * this.MARGIN_Y) / this.ROWS; }
     };
+
+    p.preload = function() {
+        retroFont = p.loadFont('assets/fonts/VT323-Regular.ttf');
+    }
 
     class Player {
         constructor() {
@@ -75,6 +80,7 @@ let gameSketch = function(p) {
             
             // Draw protection aura when safe
             if (this.isSafe) {
+                p.textFont(retroFont);
                 p.noFill();
                 p.stroke(100, 200, 100);
                 p.strokeWeight(2);
@@ -95,6 +101,7 @@ let gameSketch = function(p) {
             
             // Show protection status above player
             if (this.isSafe) {
+                p.textFont(retroFont);
                 p.textAlign(p.CENTER);
                 p.fill(100, 200, 100);
                 p.textSize(12);
@@ -328,6 +335,8 @@ let gameSketch = function(p) {
         }
         p.background(skyColor);
         
+
+        /*
         // Draw grid (for debugging)
         p.stroke(255, 255, 255, 30);
         for (let x = 0; x <= GRID.COLS; x++) {
@@ -337,7 +346,7 @@ let gameSketch = function(p) {
         for (let y = 0; y <= GRID.ROWS; y++) {
             let yPos = GRID.MARGIN_Y + y * GRID.cellHeight;
             p.line(GRID.MARGIN_X, yPos, 800 - GRID.MARGIN_X, yPos);
-        } 
+        } */
         
         // Draw sun with more margin
         p.fill(sunDanger ? p.color(255, 100, 0) : p.color(255, 255, 0));
@@ -384,6 +393,7 @@ let gameSketch = function(p) {
         p.rect(10, 10, 200, 100, 10);
         
         // Draw score with icon and better formatting
+        p.textFont(retroFont);
         p.textSize(24);
         p.fill(255, 215, 0); // Gold color for score
         p.textAlign(p.LEFT);
@@ -401,9 +411,11 @@ let gameSketch = function(p) {
         // Show shelter status with icon
         if (player.isSafe) {
             p.fill(100, 200, 100);
+            p.textFont(retroFont);
             p.text(`✓ Protected from Sun & Heat!`, 20, 90);
         } else if (timeOfDay > 10 && timeOfDay < 16) {
             p.fill(255, 100, 0);
+            p.textFont(retroFont);
             p.text(`! Find Shelter!`, 20, 90);
         }
         
@@ -411,6 +423,7 @@ let gameSketch = function(p) {
             p.fill(0, 0, 0, 150);
             p.rect(0, 0, 800, 600);
             p.fill(255);
+            p.textFont(retroFont);
             p.textSize(40);
             p.textAlign(p.CENTER);
             p.text('Game Over!', GRID.width/2, GRID.height/2 - 50);

@@ -533,6 +533,67 @@ video {
   grid-template-columns: repeat(3,1fr);
 }
 
+.level-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 15rem;
+  flex: 1;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px var(--shadow-primary);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.additional-image {
+  position: relative;
+  width: 100%;
+  height: 15rem;
+  flex: 1;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px var(--shadow-primary);
+  padding-top: 1rem;
+  overflow: hidden;
+}
+
+.additional-image img {
+  width: auto;
+  height: 100%;
+}
+
+.level-image img {
+  width: auto;
+  height: 100%;
+  transform: translateX(-25%)
+}
+
+.activity-section {
+  margin-bottom: 2rem;
+}
+
+.element-img {
+  display: block;
+  height: 4rem;
+  width: 4rem;
+  padding-right: 1.5rem;
+}
+
+.element-img img {
+  position: absolute;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.element-img:hover{
+  height: 8rem;
+  width: 8rem;
+  cursor: pointer;
+}
+
 .activity-list ul {
   list-style: none;
   list-style-type: none;
@@ -543,6 +604,14 @@ video {
 .activity-list ol {
   padding: 0;
   margin: 0 0 1.5rem 0;
+}
+
+.activity-list.morning li{
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .activity-list.gear li {
@@ -581,7 +650,8 @@ video {
 
 .activity-list.route li::before,
 .activity-list.gear li::before,
-.activity-list.zone li::before {
+.activity-list.zone li::before,
+.activity-list.morning li::before {
   content: "";
   position: absolute;
   left: 0;
@@ -798,6 +868,7 @@ transform: translateY(0.5rem);
   padding-left: 3rem;
   border-radius: 1rem;
   padding: 1.5rem;
+  align-self: center;
 }
 
 .map-image {
