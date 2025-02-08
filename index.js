@@ -190,6 +190,8 @@ let cameraSketch = function(p) {
         detectFace();
     }
 
+    let lastDirection = null; 
+
     async function detectFace() {
         if (detector && video.elt.readyState === 4) {
             predictions = await detector.estimateFaces(video.elt);
@@ -197,22 +199,41 @@ let cameraSketch = function(p) {
             if (predictions.length > 0 && p.keyIsDown(p.SHIFT)) {
                 const nose = predictions[0].keypoints[1];
                 const currentTime = p.millis();
-    
+                
                 if (currentTime - lastNavigationTime > COOLDOWN_MS) {
+                    let currentDirection = null;
+                    
                     if (nose.x < video.width * 0.4) {
-                        navigateLesson(1);
-                        lastNavigationTime = currentTime;
+                        currentDirection = 'right';
                     } else if (nose.x > video.width * 0.6) {
-                        navigateLesson(-1);
-                        lastNavigationTime = currentTime;
+                        currentDirection = 'left';
                     } else if (nose.y < video.height * 0.4) {
-                        navigateUnit(1);
-                        lastNavigationTime = currentTime;
+                        currentDirection = 'up';
                     } else if (nose.y > video.height * 0.6) {
-                        navigateUnit(-1);
+                        currentDirection = 'down';
+                    } else {
+                        currentDirection = 'center';
+                    }
+    
+                    // Only navigate if direction has changed from center
+                    if (currentDirection !== 'center' && lastDirection === 'center') {
+                        if (currentDirection === 'right') {
+                            navigateLesson(1);
+                        } else if (currentDirection === 'left') {
+                            navigateLesson(-1);
+                        } else if (currentDirection === 'up') {
+                            navigateUnit(-1);
+                        } else if (currentDirection === 'down') {
+                            navigateUnit(1);
+                        }
                         lastNavigationTime = currentTime;
                     }
+                    
+                    lastDirection = currentDirection;
                 }
+            } else {
+                // Reset lastDirection when SHIFT is released
+                lastDirection = 'center';
             }
         }
     }
